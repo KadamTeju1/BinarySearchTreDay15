@@ -1,6 +1,4 @@
-
-
-public class BinaryTree<K> {
+public class BinaryTree<K extends Comparable<K>> {
 
     private BinaryTreeNode<K> root;
 
@@ -8,39 +6,47 @@ public class BinaryTree<K> {
         this.root = root;
     }
 
-    public int size() {
-        return size(root);
+    public boolean search(K target) {
+        return search(root, target);
     }
 
-    private int size(BinaryTreeNode<K> node) {
-        if (node == null) {
-            return 0;
+    private boolean search(BinaryTreeNode<K> currentNode, K target) {
+        if (currentNode == null) {
+            return false;
         }
-        return 1 + size(node.left) + size(node.right);
+
+        int compareResult = target.compareTo(currentNode.key);
+
+        if (compareResult == 0) {
+            return true; // Element found
+        } else if (compareResult < 0) {
+            return search(currentNode.left, target); // Recursively search the left subtree
+        } else {
+            return search(currentNode.right, target); // Recursively search the right subtree
+        }
     }
 
     public static void main(String[] args) {
         // Create the binary tree manually
-        BinaryTreeNode<Integer> root = new BinaryTreeNode<>(1);
-        root.left = new BinaryTreeNode<>(2);
-        root.right = new BinaryTreeNode<>(3);
-        root.left.left = new BinaryTreeNode<>(4);
-        root.left.right = new BinaryTreeNode<>(5);
-        root.right.left = new BinaryTreeNode<>(6);
-        root.right.right = new BinaryTreeNode<>(7);
+        BinaryTreeNode<Integer> root = new BinaryTreeNode<>(30);
+        root.left = new BinaryTreeNode<>(20);
+        root.right = new BinaryTreeNode<>(40);
+        root.left.left = new BinaryTreeNode<>(10);
+        root.left.right = new BinaryTreeNode<>(25);
+        root.right.left = new BinaryTreeNode<>(35);
+        root.right.right = new BinaryTreeNode<>(50);
 
         // Create the binary tree
         BinaryTree<Integer> binaryTree = new BinaryTree<>(root);
 
-        // Check if all elements are added by comparing the size
-        int expectedSize = 7; // Expected number of nodes in the tree
-        int actualSize = binaryTree.size();
+        // Search for the element 63
+        int target = 63;
+        boolean found = binaryTree.search(target);
 
-        System.out.println("Binary Tree Size: " + actualSize);
-        if (actualSize == expectedSize) {
-            System.out.println("All elements are added to the binary tree.");
+        if (found) {
+            System.out.println(target + " is found in the binary tree.");
         } else {
-            System.out.println("Not all elements are added to the binary tree.");
+            System.out.println(target + " is not found in the binary tree.");
         }
     }
 }
